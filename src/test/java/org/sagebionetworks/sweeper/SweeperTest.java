@@ -21,7 +21,9 @@ public class SweeperTest {
 	
     @Before
     public void setup() {
-    	List<SweepConfiguration> configList = null;
+    	List<SweepConfiguration> configList = new ArrayList<SweepConfiguration>();
+    	SweepConfiguration config = new SweepConfiguration("src/test/resources", "repo-activity\\.log", "");
+    	configList.add(config);
     	mockS3 = mock(AmazonS3.class);
     	sweeper = new Sweeper(mockS3, "testId", configList);
     }
@@ -49,5 +51,11 @@ public class SweeperTest {
 			File test = files.get(i);
 			assertEquals(validation.getAbsolutePath(), test.getAbsolutePath());
 		}
+    }
+
+    @Test
+    public void testSweepAll() {
+    	sweeper.sweepAllFiles();
+    	verify(mockS3).putObject(anyString(), anyString(), (File) anyObject());
     }
 }

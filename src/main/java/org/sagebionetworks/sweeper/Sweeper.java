@@ -38,12 +38,13 @@ public class Sweeper
 		this.client = client;
 	}
 
-    public AmazonS3 s3Authenticate(String accessKeyID, String secretKey) {
-      AWSCredentials credentials = new BasicAWSCredentials(
-                                 accessKeyID, secretKey);
-      return new AmazonS3Client(credentials);
-    }
-    
+	public void sweepAllFiles() {
+		for (SweepConfiguration config : configList) {
+			List<File> files = findFiles(config);
+			sweep(config, files);
+		}
+	}
+
 	public void sweep(SweepConfiguration config, List<File> filesToSweep) {
 		for (File file : filesToSweep) {
 			String key = config.fileNameToKey(ec2InstanceId, file.getName());
