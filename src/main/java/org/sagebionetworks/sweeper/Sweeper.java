@@ -1,7 +1,6 @@
 package org.sagebionetworks.sweeper;
 
 import java.io.*;
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
@@ -23,36 +22,33 @@ public class Sweeper
 	final List<SweepConfiguration> configList;
 
 	final String ec2InstanceId;
+	AmazonS3 client;
 	
-    public Sweeper(String instanceId, List<SweepConfiguration> configList) {
+    public Sweeper(AmazonS3 client, String instanceId, List<SweepConfiguration> configList) {
+    	this.client = client;
     	this.ec2InstanceId = instanceId;
 		this.configList = configList;
 	}
 
-	public static void main( String[] args )
-    {
-		ArrayList<SweepConfiguration> configs = new ArrayList<SweepConfiguration>();
-		
-    	Sweeper testSweep = new Sweeper("fakeId", configs);
-    }
+	public AmazonS3 getClient() {
+		return client;
+	}
+
+	public void setClient(AmazonS3 client) {
+		this.client = client;
+	}
 
     public AmazonS3 s3Authenticate(String accessKeyID, String secretKey) {
-      AWSCredentials myCredentials = new BasicAWSCredentials(
+      AWSCredentials credentials = new BasicAWSCredentials(
                                  accessKeyID, secretKey);
-      return new AmazonS3Client(myCredentials);
+      return new AmazonS3Client(credentials);
     }
     
 	public void sweep(SweepConfiguration config, List<File> filesToSweep) {
 		for (File file : filesToSweep) {
 			String key = config.fileNameToKey(ec2InstanceId, file.getName());
-			pushToS3(config.getS3BucketName(), file, key);
+			client.putObject(config.getS3BucketName(), key, file);
 		}
-		
-	}
-
-	private void pushToS3(String s3BucketName, File file, String key) {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public List<File> findFiles(SweepConfiguration config) {

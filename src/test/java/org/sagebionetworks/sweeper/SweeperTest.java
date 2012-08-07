@@ -1,6 +1,7 @@
 package org.sagebionetworks.sweeper;
 
 import static org.junit.Assert.*;
+import static org.mockito.Mockito.*;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -8,17 +9,21 @@ import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import com.amazonaws.services.s3.AmazonS3;
 /**
  * Unit test for simple Sweeper.
  */
 public class SweeperTest {
 	
 	Sweeper sweeper;
+	AmazonS3 mockS3;
 	
     @Before
     public void setup() {
     	List<SweepConfiguration> configList = null;
-    	sweeper = new Sweeper("testId", configList);
+    	mockS3 = mock(AmazonS3.class);
+    	sweeper = new Sweeper(mockS3, "testId", configList);
     }
     
     @Test
