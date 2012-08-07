@@ -43,7 +43,7 @@ public class Sweeper
     
 	public void sweep(SweepConfiguration config, List<File> filesToSweep) {
 		for (File file : filesToSweep) {
-			String key = config.fileNameToKey(EC2_INSTANCE_ID);
+			String key = config.fileNameToKey(EC2_INSTANCE_ID, file.getName());
 			pushToS3(config.getS3BucketName(), file, key);
 		}
 		

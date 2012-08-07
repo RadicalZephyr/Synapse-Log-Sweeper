@@ -1,25 +1,25 @@
 package org.sagebionetworks.sweeper;
 
+import java.util.regex.Pattern;
+
 public class SweepConfiguration {
 	
 	final String logBaseDir;
-	final String logExpression;
+	final Pattern logExpression;
 	final String s3BucketName;
-	final String renamingPattern;
 	
 	public SweepConfiguration(String logBaseDir, String logExpression,
-			String s3BucketName, String renamingPattern) {
+			String s3BucketName) {
 		this.logBaseDir = logBaseDir;
-		this.logExpression = logExpression;
+		this.logExpression = Pattern.compile(logExpression);
 		this.s3BucketName = s3BucketName;
-		this.renamingPattern = renamingPattern;
 	}
 
 	public String getLogBaseDir() {
 		return logBaseDir;
 	}
 
-	public String getLogExpression() {
+	public Pattern getLogExpression() {
 		return logExpression;
 	}
 
@@ -27,13 +27,15 @@ public class SweepConfiguration {
 		return s3BucketName;
 	}
 
-	public String getRenamingPattern() {
-		return renamingPattern;
+	/**
+	 * Joins the original filename to the ec2Id with a "-"
+	 * @param ec2Id
+	 * @param filename
+	 * @return
+	 */
+	public String fileNameToKey(String ec2Id, String filename) {
+		return String.format("%s-%s", filename, ec2Id);
 	}
-
-	public String fileNameToKey(String eC2_INSTANCE_ID) {
-		// TODO Auto-generated method stub
-		return null;
-	}
+	
 
 }
