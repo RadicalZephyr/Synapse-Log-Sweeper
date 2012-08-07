@@ -1,38 +1,34 @@
 package org.sagebionetworks.sweeper;
 
-import junit.framework.Test;
-import junit.framework.TestCase;
-import junit.framework.TestSuite;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
+import org.junit.Before;
+import org.junit.Test;
 /**
  * Unit test for simple Sweeper.
  */
-public class SweeperTest 
-    extends TestCase
-{
-    /**
-     * Create the test case
-     *
-     * @param testName name of the test case
-     */
-    public SweeperTest( String testName )
-    {
-        super( testName );
+public class SweeperTest {
+	
+	Sweeper sweeper;
+	
+    @Before
+    public void setup() {
+    	List<SweepConfiguration> configList = null;
+    	sweeper = new Sweeper("testId", configList);
     }
-
-    /**
-     * @return the suite of tests being tested
-     */
-    public static Test suite()
-    {
-        return new TestSuite( SweeperTest.class );
+    
+    @Test
+    public void testSweeper() {
+    	List<File> files = new ArrayList<File>();
+    	
+		sweeper.sweep(null, files);
+		
     }
+    
+    @Test
+    public void testREFinder() {
 
-    /**
-     * Rigourous Test :-)
-     */
-    public void testApp()
-    {
-        assertTrue( true );
     }
 }

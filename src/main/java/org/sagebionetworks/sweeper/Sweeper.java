@@ -1,5 +1,6 @@
 package org.sagebionetworks.sweeper;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,9 +19,12 @@ import com.amazonaws.services.s3.AmazonS3Client;
  */
 public class Sweeper
 {
-	List<SweepConfiguration> configList;
+	final List<SweepConfiguration> configList;
+
+	final String EC2_INSTANCE_ID;
 	
-    public Sweeper(List<SweepConfiguration> configList) {
+    public Sweeper(String instanceId, List<SweepConfiguration> configList) {
+    	this.EC2_INSTANCE_ID = instanceId;
 		this.configList = configList;
 	}
 
@@ -28,7 +32,7 @@ public class Sweeper
     {
 		ArrayList<SweepConfiguration> configs = new ArrayList<SweepConfiguration>();
 		
-    	Sweeper testSweep = new Sweeper(configs);
+    	Sweeper testSweep = new Sweeper("fakeId", configs);
     }
 
     public AmazonS3 s3Authenticate(String accessKeyID, String secretKey) {
@@ -36,5 +40,18 @@ public class Sweeper
                                  accessKeyID, secretKey);
       return new AmazonS3Client(myCredentials);
     }
+    
+	public void sweep(SweepConfiguration config, List<File> filesToSweep) {
+		for (File file : filesToSweep) {
+			String key = config.fileNameToKey(EC2_INSTANCE_ID);
+			pushToS3(config.getS3BucketName(), file, key);
+		}
+		
+	}
+
+	private void pushToS3(String s3BucketName, File file, String key) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }
