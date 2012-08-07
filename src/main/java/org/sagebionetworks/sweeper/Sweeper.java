@@ -1,7 +1,8 @@
 package org.sagebionetworks.sweeper;
 
-import java.io.File;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.amazonaws.auth.AWSCredentials;
@@ -21,10 +22,10 @@ public class Sweeper
 {
 	final List<SweepConfiguration> configList;
 
-	final String EC2_INSTANCE_ID;
+	final String ec2InstanceId;
 	
     public Sweeper(String instanceId, List<SweepConfiguration> configList) {
-    	this.EC2_INSTANCE_ID = instanceId;
+    	this.ec2InstanceId = instanceId;
 		this.configList = configList;
 	}
 
@@ -43,7 +44,7 @@ public class Sweeper
     
 	public void sweep(SweepConfiguration config, List<File> filesToSweep) {
 		for (File file : filesToSweep) {
-			String key = config.fileNameToKey(EC2_INSTANCE_ID, file.getName());
+			String key = config.fileNameToKey(ec2InstanceId, file.getName());
 			pushToS3(config.getS3BucketName(), file, key);
 		}
 		
@@ -52,6 +53,13 @@ public class Sweeper
 	private void pushToS3(String s3BucketName, File file, String key) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public List<File> findFiles(SweepConfiguration config) {
+		File dir = new File(config.getLogBaseDir());
+		File[] files = dir.listFiles(config.getFilter());
+		
+		return Arrays.asList(files);
 	}
 
 }

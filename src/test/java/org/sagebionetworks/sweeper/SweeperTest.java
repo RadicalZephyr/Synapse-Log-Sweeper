@@ -1,5 +1,7 @@
 package org.sagebionetworks.sweeper;
 
+import static org.junit.Assert.*;
+
 import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
@@ -28,7 +30,19 @@ public class SweeperTest {
     }
     
     @Test
-    public void testREFinder() {
-
+    public void testFindFiles() {
+    	List<File> actualFiles = new ArrayList<File>();
+    	actualFiles.add(new File("src/test/resources/repo-activity.log"));
+    	
+    	SweepConfiguration config = new SweepConfiguration("src/test/resources", "repo-activity\\.log", "");
+		List<File> files = sweeper.findFiles(config);
+		
+		assertEquals(actualFiles.size(), files.size());
+		
+		for (int i = 0; i < actualFiles.size() && i < files.size(); i++) {
+			File validation = actualFiles.get(i);
+			File test = files.get(i);
+			assertEquals(validation.getAbsolutePath(), test.getAbsolutePath());
+		}
     }
 }

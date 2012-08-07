@@ -1,18 +1,34 @@
 package org.sagebionetworks.sweeper;
 
+import java.io.File;
+import java.io.FileFilter;
+import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class SweepConfiguration {
+	private class NameFilter implements FileFilter {
+
+		public boolean accept(File pathname) {
+			if (pathname.isFile()) {
+				Matcher m = logExpression.matcher(pathname.getName());
+				return m.matches();
+			}
+			return false;
+		}
+		
+	}
 	
 	final String logBaseDir;
 	final Pattern logExpression;
 	final String s3BucketName;
+	final SweepConfiguration.NameFilter filter;
 	
 	public SweepConfiguration(String logBaseDir, String logExpression,
 			String s3BucketName) {
 		this.logBaseDir = logBaseDir;
 		this.logExpression = Pattern.compile(logExpression);
 		this.s3BucketName = s3BucketName;
+		this.filter = new SweepConfiguration.NameFilter();
 	}
 
 	public String getLogBaseDir() {
@@ -25,6 +41,10 @@ public class SweepConfiguration {
 
 	public String getS3BucketName() {
 		return s3BucketName;
+	}
+
+	public FileFilter getFilter() {
+		return filter;
 	}
 
 	/**
