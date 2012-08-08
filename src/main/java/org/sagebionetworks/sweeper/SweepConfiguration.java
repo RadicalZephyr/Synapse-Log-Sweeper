@@ -18,10 +18,10 @@ public class SweepConfiguration {
     
   }
   
-  final String logBaseDir;
-  final Pattern logExpression;
-  final String s3BucketName;
-  final SweepConfiguration.NameFilter filter;
+  final private String logBaseDir;
+  final private Pattern logExpression;
+  final private String s3BucketName;
+  final private SweepConfiguration.NameFilter filter;
   
   public SweepConfiguration(String logBaseDir, String logExpression,
       String s3BucketName) {
