@@ -52,8 +52,8 @@ public class Sweeper
       } else if (bucketExists) {
         // Could also try to add a unique identifier to the front/back of bucketname
         // but this requires a lot more work ;)
-        throw new RuntimeException("Bucketname:"+config.getS3BucketName()+
-            " already exists and is not owned by us!");
+        throw new RuntimeException("Bucketname: \""+config.getS3BucketName()+
+            "\" already exists and is not owned by us!");
       }
     }
   }
