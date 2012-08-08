@@ -56,6 +56,9 @@ public class Sweeper {
 				throw new RuntimeException("Bucketname: \""
 						+ config.getS3BucketName()
 						+ "\" already exists and is not owned by us!");
+			} else {
+				// Create a new bucket.  There needs to be some configuration about
+				// how buckets are setup by default...
 			}
 		}
 	}
