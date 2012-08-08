@@ -4,6 +4,7 @@ import static org.junit.Assert.assertEquals;
 import static org.mockito.Matchers.anyObject;
 import static org.mockito.Matchers.anyString;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 
 import java.io.File;
@@ -22,21 +23,17 @@ import com.amazonaws.services.s3.AmazonS3;
  */
 public class SweeperTest {
 
-	Sweeper sweeper;
 	AmazonS3 mockS3;
+	Sweeper sweeper;
 
 	@Before
-	public void setup() {
-		List<SweepConfiguration> configList = new ArrayList<SweepConfiguration>();
-		SweepConfiguration config = new SweepConfiguration(
-				"src/test/resources", "repo-activity\\.log", "");
-		configList.add(config);
+	public void setUp() {
 		mockS3 = mock(AmazonS3.class);
-		sweeper = new Sweeper(mockS3, "testId", configList);
+		this.sweeper = new Sweeper(mockS3, "testId", null);
 	}
 
 	@Test
-	public void testSweeper() {
+	public void testSweepNullConfig() {
 		List<File> files = new ArrayList<File>();
 
 		sweeper.sweep(null, files);
@@ -51,12 +48,12 @@ public class SweeperTest {
 	}
 
 	private void runFindFiles(String logBaseName) {
-		List<File> actualFiles = buildFileList("src/test/resources/"+logBaseName, ".2012-08-11-", subRange("0", 0, 10), ".gz");
+		List<File> actualFiles = buildFileList("src/test/resources/"
+				+ logBaseName, ".2012-08-11-", subRange("0", 0, 10), ".gz");
 
 		String logExpression = logBaseName + "\\.\\d{4}-\\d{2}-\\d{2}-\\d{2}\\.gz";
 
-		SweepConfiguration config = new SweepConfiguration(
-				"src/test/resources", logExpression, "");
+		SweepConfiguration config = new SweepConfiguration("src/test/resources", logExpression, "");
 		List<File> files = sweeper.findFiles(config);
 
 		Comparator<File> c = new Comparator<File>() {
@@ -81,8 +78,22 @@ public class SweeperTest {
 
 	@Test
 	public void testSweepAll() {
-		sweeper.sweepAllFiles();
-		verify(mockS3).putObject(anyString(), anyString(), (File) anyObject());
+		List<SweepConfiguration> configList = new ArrayList<SweepConfiguration>();
+		SweepConfiguration configActivity = new SweepConfiguration(
+				"src/test/resources", "repo-activity\\.\\d{4}-\\d{2}-\\d{2}-\\d{2}\\.gz", "");
+		SweepConfiguration configSlow = new SweepConfiguration(
+				"src/test/resources", "repo-slow-profile\\.\\d{4}-\\d{2}-\\d{2}-\\d{2}\\.gz", "");
+		SweepConfiguration configTrace = new SweepConfiguration(
+				"src/test/resources", "repo-trace-profile\\.\\d{4}-\\d{2}-\\d{2}-\\d{2}\\.gz", "");
+
+		configList.add(configActivity);
+		configList.add(configSlow);
+		configList.add(configTrace);
+
+		Sweeper localSweeper = new Sweeper(mockS3, "testId", configList);
+
+		localSweeper.sweepAllFiles();
+		verify(mockS3, times(27)).putObject(anyString(), anyString(), (File) anyObject());
 	}
 
 	private String[] subRange(String prefix, int start, int end) {

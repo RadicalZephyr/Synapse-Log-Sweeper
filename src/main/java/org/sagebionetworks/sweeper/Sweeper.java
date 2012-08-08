@@ -78,7 +78,11 @@ public class Sweeper {
 		File dir = new File(config.getLogBaseDir());
 		File[] files = dir.listFiles(config.getFilter());
 
-		return Arrays.asList(files);
+		if (files != null) {
+			return Arrays.asList(files);
+		} else {
+			return new ArrayList<File>();
+		}
 	}
 
 }
