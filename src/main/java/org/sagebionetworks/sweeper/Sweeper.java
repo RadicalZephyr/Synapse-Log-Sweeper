@@ -18,10 +18,10 @@ import com.amazonaws.services.s3.model.Bucket;
  */
 public class Sweeper
 {
-  final List<SweepConfiguration> configList;
+  private final List<SweepConfiguration> configList;
 
-  final String ec2InstanceId;
-  AmazonS3 client;
+  private final String ec2InstanceId;
+  private AmazonS3 client;
 
     public Sweeper(AmazonS3 client, String instanceId, List<SweepConfiguration> configList) {
       this.client = client;
