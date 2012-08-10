@@ -4,6 +4,7 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Set;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.Bucket;
@@ -15,13 +16,13 @@ import com.amazonaws.services.s3.model.Bucket;
  * 
  */
 public class Sweeper {
-	private final List<SweepConfiguration> configList;
+	private final Set<SweepConfiguration> configList;
 
 	private final String ec2InstanceId;
 	private AmazonS3 client;
 
 	public Sweeper(AmazonS3 client, String instanceId,
-			List<SweepConfiguration> configList) {
+			Set<SweepConfiguration> configList) {
 		this.client = client;
 		this.ec2InstanceId = instanceId;
 		this.configList = configList;

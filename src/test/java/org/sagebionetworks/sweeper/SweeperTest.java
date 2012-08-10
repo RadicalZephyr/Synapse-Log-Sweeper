@@ -11,7 +11,9 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -78,7 +80,7 @@ public class SweeperTest {
 
 	@Test
 	public void testSweepAll() {
-		List<SweepConfiguration> configList = new ArrayList<SweepConfiguration>();
+		Set<SweepConfiguration> configList = new HashSet<SweepConfiguration>();
 		SweepConfiguration configActivity = new SweepConfiguration(
 				"src/test/resources", "repo-activity\\.\\d{4}-\\d{2}-\\d{2}-\\d{2}\\.gz", "");
 		SweepConfiguration configSlow = new SweepConfiguration(

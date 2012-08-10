@@ -37,12 +37,13 @@ public class SweepConfiguration {
 	 * parameter.
 	 */
 	final private SweepConfiguration.NameFilter filter;
+	final private String pattern;
 
 	/**
 	 * Constructs a SweepConfiguration object that signifies one set of log
 	 * files (that match logExpression) that are found under logBaseDir to be
 	 * swept into the S3 bucket s3BucketName.
-	 * 
+	 *
 	 * @param logBaseDir
 	 *            full pathname to the root log directory
 	 * @param logExpression
@@ -55,6 +56,7 @@ public class SweepConfiguration {
 			String s3BucketName) {
 		this.logBaseDir = logBaseDir;
 		this.s3BucketName = s3BucketName + ".sagebionetworks.org";
+		this.pattern = logExpression;
 		this.filter = new SweepConfiguration.NameFilter(
 				Pattern.compile(logExpression));
 	}
@@ -67,6 +69,10 @@ public class SweepConfiguration {
 		return s3BucketName;
 	}
 
+	public String getPattern() {
+		return pattern;
+	}
+
 	public FileFilter getFilter() {
 		return filter;
 	}
@@ -76,13 +82,40 @@ public class SweepConfiguration {
 	 * thing here is that some reasonably unique identifier is part of the key,
 	 * because Elastic Beanstalk will make it so that we'll have as many files
 	 * per-roll interval as that roll interval had active instances.
-	 * 
+	 *
 	 * @param ec2Id
 	 * @param filename
 	 * @return
 	 */
 	public String fileNameToKey(String ec2Id, String filename) {
-		return String.format("%s-%s", filename, ec2Id);
+		return String.format("%s-%s", ec2Id, filename);
 	}
 
+	@Override
+	public boolean equals(Object o) {
+		if (o == this)
+			return true;
+		if (!(o instanceof SweepConfiguration))
+			return false;
+
+		SweepConfiguration sc = (SweepConfiguration)o;
+		return this.logBaseDir.equals(sc.logBaseDir) &&
+				this.s3BucketName.equals(sc.s3BucketName) &&
+				this.pattern.equals(sc.pattern);
+	}
+
+	@Override
+	public int hashCode() {
+		int result = 42;
+		result = 31 * result + this.logBaseDir.hashCode();
+		result = 31 * result + this.s3BucketName.hashCode();
+		result = 31 * result + this.pattern.hashCode();
+		return result;
+	}
+
+	@Override
+	public String toString() {
+		return String.format("[SweepConfiguration: s3Bucket=%s, logBaseDirectory=%s, pattern=%s]",
+				s3BucketName, logBaseDir, pattern);
+	}
 }

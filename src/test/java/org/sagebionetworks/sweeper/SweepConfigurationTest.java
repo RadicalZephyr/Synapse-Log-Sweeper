@@ -23,7 +23,7 @@ public class SweepConfigurationTest {
 	public void testFileNameToKey() {
 		String filename = "repo-activity-2012-08-07:08.gz";
 		String ec2Key = config.fileNameToKey(EC2_INSTANCE_ID, filename);
-		assertEquals(filename + "-" + EC2_INSTANCE_ID, ec2Key);
+		assertEquals(String.format("%s-%s", EC2_INSTANCE_ID, filename), ec2Key);
 	}
 
 }
